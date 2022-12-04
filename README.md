@@ -1,0 +1,3 @@
+```
+yarn add ngx-spinner
+````

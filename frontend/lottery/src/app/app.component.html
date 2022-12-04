@@ -1,0 +1,69 @@
+<div class="px-4 py-5 my-5 text-center">
+  <h1 class="display-5 fw-bold">Tokenized Ballot</h1>
+  <div *ngIf="!wallet" class="col-lg-6 mx-auto">
+    <div style="background-color: black; color:white"> &nbsp;{{mainMessage}}</div>
+    <p>
+      <input #tokenAddress class="form-control mb-4" type="text"
+        placeholder="Paste here, the Token Contract address" />
+    </p>
+    <p>
+      <input #lotteryAddress class="form-control mb-4" type="text"
+        placeholder="Paste here, the Lottery Contract address" />
+    </p>
+    <p>To use this ballot you need a wallet</p>
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+      <button disabled type="button" class="btn btn-success btn-lg px-4 gap-3" (click)="createWallet();">
+        Create Wallet
+      </button>
+
+      <button type="button" class="btn btn-info btn-lg px-4 gap-3" (click)="importWallet();">
+        Import Wallet
+      </button>
+      <button type="button" disabled class="btn btn-danger btn-lg px-4 gap-3">
+        Connect Wallet
+      </button>
+    </div>
+  </div>
+  <div *ngIf="wallet" class="col-lg-6 mx-auto">
+    <div style="background-color: black; color:white"> &nbsp;{{mainMessage}}</div>
+    <p>Your wallet address : {{wallet.address}}</p>
+
+    <p>Lottery address : {{lotteryAddr}}</p>
+    <p>Lottery Token address : {{tokenAddr}}</p>
+
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+      <div class="card">
+        <div class="card-body">
+          Ethers balance: {{etherBalance}}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          Token balance : {{tokenBalance}}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          Voting power : {{votePower}}
+        </div>
+      </div>
+    </div>
+    <div border-style="solid">
+  <!--    <p> </p>
+      <button (click)="" type="button" class="btn btn-danger btn-lg px-4 gap-3">
+        Claim Tokens
+      </button>
+    </div>
+    <div>
+      <p> </p>
+      <p>
+        <input #delegateAddress class="form-control mb-4" type="text"
+          placeholder="Paste here, the wallet address to delegate vote to" />
+      </p>
+      <button (click)="" type="button" class="btn btn-danger btn-lg px-4 gap-3">
+        Delegate Vote
+      </button>
+    -->
+      </div>
+  </div>
+</div>
