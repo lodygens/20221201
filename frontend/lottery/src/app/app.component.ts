@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Address } from 'cluster';
-import { ethers, Wallet } from 'ethers';
+import { BigNumber, ContractReceipt, ethers, Transaction, Wallet } from 'ethers';
 import { inherits } from 'util';
 import { threadId } from 'worker_threads';
 import lotteryJson from '../assets/Lottery.json'
 import tokenJson from '../assets/LotteryToken.json'
 import { environment } from "../environments/environment";
 import { NgxSpinnerService } from "ngx-spinner";
+import { Block } from '@ethersproject/providers';
 
 
 const BET_PRICE = 1;
@@ -19,8 +20,8 @@ const TOKEN_RATIO = 1;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
-  mainMessage : string | undefined;
+export class AppComponent implements OnInit {
+  mainMessage: string | undefined;
   wallet: ethers.Wallet | undefined;
   provider: ethers.providers.Provider;
   etherBalance: number | undefined;
@@ -72,9 +73,12 @@ export class AppComponent implements OnInit{
     ).then((contract) => {
 
       this.mainMessage = "Please Wait : retreiving Token address";
+      this.lotteryContract = contract;
       this.lotteryAddr = contract.address;
 
-      contract["paymentToken"]().then((address:string) => {
+      console.log(`[init] : lotteryContract =  ${this.lotteryContract}`);
+
+      contract["paymentToken"]().then((address: string) => {
 
         this.mainMessage = "";
         this.spinner.hide();
@@ -86,6 +90,10 @@ export class AppComponent implements OnInit{
           this.tokenInterface,
           tokenJson.bytecode);
         this.tokenContract = lotteryFactory.attach(this.tokenAddr);
+
+        this.checkState().then(() => {
+          this.openBets("50");
+        })
       })
     });
   }
@@ -106,22 +114,70 @@ export class AppComponent implements OnInit{
     this.init(new Wallet(environment.PRIVATE_KEY).connect(this.provider));
   }
 
-  checkState() {
-/*
-    const state = await contract.betsOpen();
-    console.log(`The lottery is ${state ? "open" : "closed"}\n`);
-    if (!state) return;
-    const currentBlock = await ethers.provider.getBlock("latest");
-    const currentBlockDate = new Date(currentBlock.timestamp * 1000);
-    const closingTime = await contract.betsClosingTime();
-    const closingTimeDate = new Date(closingTime.toNumber() * 1000);
-    console.log(
-      `The last block was mined at ${currentBlockDate.toLocaleDateString()} : ${currentBlockDate.toLocaleTimeString()}\n`
-    );
-    console.log(
-      `lottery should close at ${closingTimeDate.toLocaleDateString()} : ${closingTimeDate.toLocaleTimeString()}\n`
-    );
-    */
-     }
-  
+  async checkState() {
+    if (!this.lotteryContract) {
+      this.mainMessage = "/!\\ lotteryContract is null /!\\";
+      return;
+    }
+
+    console.log("[checkState]");
+    this.mainMessage = "Checking state";
+
+    this.lotteryContract["betsOpen"]().then((state: boolean) => {
+
+      console.log(`[checkState] : The lottery is ${state ? "open" : "closed"}`);
+      this.mainMessage = `The lottery is ${state ? "open" : "closed"}`;
+
+      if (!state)
+        return;
+
+      console.log("[checkState] : get last block");
+      this.provider.getBlock("latest").then((currentBlock: Block) => {
+
+        const currentBlockDate = new Date(currentBlock.timestamp * 1000);
+
+        if (!this.lotteryContract)
+          return;
+
+        this.lotteryContract["betsClosingTime"]().then((closingTime: BigNumber) => {
+
+          const closingTimeDate = new Date(closingTime.toNumber() * 1000);
+          console.log(
+            `The last block was mined at ${currentBlockDate.toLocaleDateString()} : ${currentBlockDate.toLocaleTimeString()}\n`
+          );
+          console.log(
+            `lottery should close at ${closingTimeDate.toLocaleDateString()} : ${closingTimeDate.toLocaleTimeString()}\n`
+          );
+          this.mainMessage = `The lottery should close at ${closingTimeDate.toLocaleDateString()} : ${closingTimeDate.toLocaleTimeString()}`;
+        })
+      })
+    })
+
+  }
+
+  async openBets(duration: string) {
+    if (!this.lotteryContract) {
+      this.mainMessage = "/!\\ lotteryContract is null /!\\";
+      return;
+    }
+
+    console.log("[openBets]");
+    this.mainMessage = "Opening bets";
+
+    this.provider.getBlock("latest").then((currentBlock: Block) => {
+      if (!this.lotteryContract)
+        return;
+
+      console.log("[openBets] : opening Bets");
+      this.lotteryContract["openBets"](currentBlock.timestamp + Number(duration)).then((tx: { wait: () => Promise<any>; }) => {
+        console.log(`[openBets] : ${tx}`);
+        tx.wait().then((receipt) => {
+          console.log(`[openBets] : ${receipt.transactionHash}`);
+          this.mainMessage = "Bets opened";
+          this.checkState();
+        })
+      })
+    })
+  }
+
 }
