@@ -3,8 +3,7 @@
   <div *ngIf="!wallet" class="col-lg-6 mx-auto">
     <div style="background-color: black; color:white"> &nbsp;{{mainMessage}}</div>
     <p>
-      <input #tokenAddress class="form-control mb-4" type="text"
-        placeholder="Paste here, the Token Contract address" />
+      <input #tokenAddress class="form-control mb-4" type="text" placeholder="Paste here, the Token Contract address" />
     </p>
     <p>
       <input #lotteryAddress class="form-control mb-4" type="text"
@@ -34,36 +33,18 @@
     <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
       <div class="card">
         <div class="card-body">
-          Ethers balance: {{etherBalance}}
+          <p>Accounts 0 balance = {{etherBalance0}}</p>
+          <p>Accounts 0 token balance = {{tokenBalance0}}</p>
         </div>
-      </div>
-      <div class="card">
         <div class="card-body">
-          Token balance : {{tokenBalance}}
+          <p>Accounts 1 balance = {{etherBalance1}}</p>
+          <p>Accounts 0 token balance = {{tokenBalance1}}</p>
         </div>
-      </div>
-      <div class="card">
         <div class="card-body">
-          Voting power : {{votePower}}
+          <p>Accounts 2 balance = {{etherBalance2}}</p>
+          <p>Accounts 0 token balance = {{tokenBalance2}}</p>
         </div>
       </div>
     </div>
-    <div border-style="solid">
-  <!--    <p> </p>
-      <button (click)="" type="button" class="btn btn-danger btn-lg px-4 gap-3">
-        Claim Tokens
-      </button>
-    </div>
-    <div>
-      <p> </p>
-      <p>
-        <input #delegateAddress class="form-control mb-4" type="text"
-          placeholder="Paste here, the wallet address to delegate vote to" />
-      </p>
-      <button (click)="" type="button" class="btn btn-danger btn-lg px-4 gap-3">
-        Delegate Vote
-      </button>
-    -->
-      </div>
   </div>
 </div>

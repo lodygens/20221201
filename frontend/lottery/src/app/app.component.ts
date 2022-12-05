@@ -11,6 +11,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { Block } from '@ethersproject/providers';
 
 
+
 const BET_PRICE = 1;
 const BET_FEE = 0.2;
 const TOKEN_RATIO = 1;
@@ -33,6 +34,13 @@ export class AppComponent implements OnInit {
   lotteryContract: ethers.Contract | undefined;
   lotteryAddr: string | undefined;
   lotteryInterface: ethers.utils.Interface | undefined;
+  accounts: Wallet[] | undefined;
+  etherBalance0: Number | undefined;
+  etherBalance1: Number | undefined;
+  etherBalance2: Number | undefined;
+  tokenBalance0: Number | undefined;
+  tokenBalance1: Number | undefined;
+  tokenBalance2: Number | undefined;
 
   ngOnInit() {
     /** spinner starts on init */
@@ -91,9 +99,7 @@ export class AppComponent implements OnInit {
           tokenJson.bytecode);
         this.tokenContract = lotteryFactory.attach(this.tokenAddr);
 
-        this.checkState().then(() => {
-          this.openBets("50");
-        })
+        this.openBets("50");
       })
     });
   }
@@ -111,6 +117,10 @@ export class AppComponent implements OnInit {
    */
 
   importWallet() {
+    this.accounts = new Array(3);
+    this.accounts[0] = new Wallet(environment.PRIVATE_KEY1).connect(this.provider);
+    this.accounts[1] = new Wallet(environment.PRIVATE_KEY2).connect(this.provider);
+    this.accounts[2] = new Wallet(environment.PRIVATE_KEY3).connect(this.provider);
     this.init(new Wallet(environment.PRIVATE_KEY).connect(this.provider));
   }
 
@@ -143,10 +153,10 @@ export class AppComponent implements OnInit {
 
           const closingTimeDate = new Date(closingTime.toNumber() * 1000);
           console.log(
-            `The last block was mined at ${currentBlockDate.toLocaleDateString()} : ${currentBlockDate.toLocaleTimeString()}\n`
+            `[checkState] : The last block was mined at ${currentBlockDate.toLocaleDateString()} : ${currentBlockDate.toLocaleTimeString()}\n`
           );
           console.log(
-            `lottery should close at ${closingTimeDate.toLocaleDateString()} : ${closingTimeDate.toLocaleTimeString()}\n`
+            `[checkState] : lottery should close at ${closingTimeDate.toLocaleDateString()} : ${closingTimeDate.toLocaleTimeString()}\n`
           );
           this.mainMessage = `The lottery should close at ${closingTimeDate.toLocaleDateString()} : ${closingTimeDate.toLocaleTimeString()}`;
         })
@@ -155,14 +165,14 @@ export class AppComponent implements OnInit {
 
   }
 
-  async openBets(duration: string) {
+  openBets(duration: string) {
     if (!this.lotteryContract) {
       this.mainMessage = "/!\\ lotteryContract is null /!\\";
       return;
     }
 
-    console.log("[openBets]");
-    this.mainMessage = "Opening bets";
+    console.log("[openBets] get last block");
+    this.mainMessage = "Opening bets getting last block";
 
     this.provider.getBlock("latest").then((currentBlock: Block) => {
       if (!this.lotteryContract)
@@ -174,10 +184,95 @@ export class AppComponent implements OnInit {
         tx.wait().then((receipt) => {
           console.log(`[openBets] : ${receipt.transactionHash}`);
           this.mainMessage = "Bets opened";
-          this.checkState();
+          this.displayBalancesAndBuyTokens();
         })
       })
     })
+  }
+
+
+  displayBalancesAndBuyTokens() {
+    if (!this.accounts)
+      return;
+
+    this.mainMessage = "Retreiving balance";
+
+    //    for (let i = 0; i < this.accounts.length; i++) {
+    for (let i = 1; i < 2; i++) {
+      this.provider.getBalance(
+        this.accounts[i].address
+      ).then((balance: BigNumber) => {
+        if (!this.accounts)
+          return;
+        const balanceEthers = ethers.utils.formatEther(balance);
+        switch (i) {
+          case 0: this.etherBalance0 = new Number(balanceEthers); break;
+          case 1: this.etherBalance1 = new Number(balanceEthers); break;
+          case 2: this.etherBalance2 = new Number(balanceEthers); break;
+        }
+        console.log(`[displayBalancesAndBuyTokens] : Balance of wallet ${this.accounts[Number(i)].address} = ${balanceEthers}`);
+        let amount = (i + 1) / 1000;
+        this.buyAndDisplayTokens(i.toString(), amount.toString());
+      })
+    }
+  }
+
+
+  buyAndDisplayTokens(index: string, amount: string) {
+    if (!this.lotteryContract || !this.accounts) {
+      this.mainMessage = "/!\\ lotteryContract is null /!\\";
+      return;
+    }
+
+    console.log(`[buyAndDisplayTokens] : ${this.accounts[Number(index)].address} is buying ${amount} tokens`);
+    this.mainMessage = `${this.accounts[Number(index)].address} is buying ${amount} tokens`;
+
+    let value = ethers.utils.parseEther(amount).div(TOKEN_RATIO);
+    console.log(`[buyAndDisplayTokens] : value = ${value}`);
+
+    this.lotteryContract.connect(this.accounts[Number(index)])["purchaseTokens"]({
+      value: ethers.utils.parseEther(amount).div(TOKEN_RATIO),
+    }).then((tx: { wait: () => Promise<any>; }) => {
+      console.log(`[buyAndDisplayTokens] : waiting receipt`);
+      tx.wait().then((receipt) => {
+        console.log(`[buyAndDisplayTokens] : Tokens buy Tx hash (${receipt.transactionHash})\n`);
+        this.displayTokenBalance(index);
+      })
+    })
+  }
+
+  displayTokenBalance(index: string) {
+    if (!this.tokenContract || !this.accounts) {
+      this.mainMessage = "/!\\ tokenContract is null /!\\";
+      return;
+    }
+
+    console.log(`[displayTokenBalance] : Retreiving token balance for ${this.accounts[Number(index)].address}`);
+    this.mainMessage = `Retreiving token balance for ${this.accounts[Number(index)].address}`;
+
+    console.log(`[displayTokenBalance] : tokenContrat ${this.tokenContract}`);
+    console.log(`[displayTokenBalance] : this.accounts[Number(index)].address ${this.accounts[Number(index)].address}`);
+    this.tokenContract["balanceOf"](this.accounts[Number(index)].address).then((balanceBN: BigNumber) => {
+
+      console.log(`[displayTokenBalance] : balanceBN =  ${balanceBN}`);
+
+      const balance = ethers.utils.formatEther(balanceBN);
+      console.log(`[displayTokenBalance] : balance =  ${balance}`);
+
+      if (!this.accounts)
+        return;
+
+      console.log(`[displayTokenBalance] : The account of address ${this.accounts[Number(index)].address} has ${balance} LT0\n`);
+      switch (index) {
+        case "0": this.tokenBalance0 = new Number(balance); break;
+        case "1": this.tokenBalance1 = new Number(balance); break;
+        case "2": this.tokenBalance2 = new Number(balance); break;
+      }
+
+      console.log(`[displayTokenBalance] : Token balance of wallet ${this.accounts[Number(index)].address} = ${balance}`);
+
+    })
+
   }
 
 }
