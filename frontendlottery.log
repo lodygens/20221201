@@ -1,0 +1,98 @@
+polyfills.js:1 [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled.
+app.component.ts:60 AlchemyProvider {_isProvider: true, _events: Array(0), _emitted: {…}, disableCcipRead: false, formatter: Formatter, …}
+core.mjs:24976 Angular is running in development mode. Call enableProdMode() to enable production mode.
+jquery-migrate-3.0.0.min.js:2 JQMIGRATE: Migrate is installed, version 3.0.0
+localhost/:1 Unchecked runtime.lastError: The message port closed before a response was received.
+localhost/:1 Unchecked runtime.lastError: The message port closed before a response was received.
+app.component.ts:91 [init] : lotteryContract =  [object Object]
+app.component.ts:181 [openBets] get last block
+app.component.ts:188 [openBets] : opening Bets
+app.component.ts:190 [openBets] : [object Object]
+app.component.ts:192 [openBets] : 0x5ce5fec6d90205b0dffad808e57e399989091a82a9ba2e53b5db4e1527922c39
+app.component.ts:219 [displayBalancesAndBuyTokens] : Balance of wallet 0x6392c3f68BD1dED8BE5C8654494d81472ab53d9a = 0.965510033016754062
+app.component.ts:233 [buyAndDisplayTokens] : 0x6392c3f68BD1dED8BE5C8654494d81472ab53d9a is buying 1 tokens
+app.component.ts:237 [buyAndDisplayTokens] : value = 100000000000000000
+app.component.ts:219 [displayBalancesAndBuyTokens] : Balance of wallet 0xB646946b98CB7F662852458A4e39B0439d6Dd815 = 1.391776345471505186
+app.component.ts:233 [buyAndDisplayTokens] : 0xB646946b98CB7F662852458A4e39B0439d6Dd815 is buying 2 tokens
+app.component.ts:237 [buyAndDisplayTokens] : value = 200000000000000000
+app.component.ts:219 [displayBalancesAndBuyTokens] : Balance of wallet 0xD7Da6dFF289814EEB7EC9b5c11844D1E011216e6 = 1.023821608193547497
+app.component.ts:233 [buyAndDisplayTokens] : 0xD7Da6dFF289814EEB7EC9b5c11844D1E011216e6 is buying 3 tokens
+app.component.ts:237 [buyAndDisplayTokens] : value = 300000000000000000
+app.component.ts:242 [buyAndDisplayTokens] : waiting receipt
+app.component.ts:242 [buyAndDisplayTokens] : waiting receipt
+app.component.ts:242 [buyAndDisplayTokens] : waiting receipt
+app.component.ts:244 [buyAndDisplayTokens] : Tokens buy Tx hash (0x41522c42e5364a3dec20675699861d903729301bd5a0f96181b183b2541112bf)
+
+app.component.ts:254 [displayTokenBalance] : Retreiving token balance for 0xD7Da6dFF289814EEB7EC9b5c11844D1E011216e6
+app.component.ts:257 [displayTokenBalance] : tokenContrat [object Object]
+app.component.ts:258 [displayTokenBalance] : this.accounts[2].address 0xD7Da6dFF289814EEB7EC9b5c11844D1E011216e6
+app.component.ts:244 [buyAndDisplayTokens] : Tokens buy Tx hash (0x3ad723ec385aba2c47c659d194af73759e9d6711f15fd647701f4146d83b198c)
+
+app.component.ts:254 [displayTokenBalance] : Retreiving token balance for 0xB646946b98CB7F662852458A4e39B0439d6Dd815
+app.component.ts:257 [displayTokenBalance] : tokenContrat [object Object]
+app.component.ts:258 [displayTokenBalance] : this.accounts[1].address 0xB646946b98CB7F662852458A4e39B0439d6Dd815
+app.component.ts:244 [buyAndDisplayTokens] : Tokens buy Tx hash (0x697dba7320116f2289e1e6ad4b2dbe9b018d737f9e56cf2fbd61377f538f422c)
+
+app.component.ts:254 [displayTokenBalance] : Retreiving token balance for 0x6392c3f68BD1dED8BE5C8654494d81472ab53d9a
+app.component.ts:257 [displayTokenBalance] : tokenContrat [object Object]
+app.component.ts:258 [displayTokenBalance] : this.accounts[0].address 0x6392c3f68BD1dED8BE5C8654494d81472ab53d9a
+app.component.ts:262 [displayTokenBalance] : balance =  3.0
+app.component.ts:267 [displayTokenBalance] : The account of address 0xD7Da6dFF289814EEB7EC9b5c11844D1E011216e6 has 3.0 LT0
+
+app.component.ts:274 [displayTokenBalance] : Token balance of wallet 0xD7Da6dFF289814EEB7EC9b5c11844D1E011216e6 = 3.0
+app.component.ts:140 [checkState]
+app.component.ts:262 [displayTokenBalance] : balance =  2.0
+app.component.ts:267 [displayTokenBalance] : The account of address 0xB646946b98CB7F662852458A4e39B0439d6Dd815 has 2.0 LT0
+
+app.component.ts:274 [displayTokenBalance] : Token balance of wallet 0xB646946b98CB7F662852458A4e39B0439d6Dd815 = 2.0
+app.component.ts:140 [checkState]
+app.component.ts:262 [displayTokenBalance] : balance =  1.0
+app.component.ts:267 [displayTokenBalance] : The account of address 0x6392c3f68BD1dED8BE5C8654494d81472ab53d9a has 1.0 LT0
+
+app.component.ts:274 [displayTokenBalance] : Token balance of wallet 0x6392c3f68BD1dED8BE5C8654494d81472ab53d9a = 1.0
+app.component.ts:140 [checkState]
+app.component.ts:145 [checkState] : The lottery is open
+app.component.ts:151 [checkState] : get last block
+app.component.ts:145 [checkState] : The lottery is open
+app.component.ts:151 [checkState] : get last block
+app.component.ts:145 [checkState] : The lottery is open
+app.component.ts:151 [checkState] : get last block
+app.component.ts:162 [checkState] : The last block was mined at 06/12/2022 : 22:14:12
+
+app.component.ts:165 [checkState] : lottery should close at 06/12/2022 : 22:16:48
+
+app.component.ts:162 [checkState] : The last block was mined at 06/12/2022 : 22:14:12
+
+app.component.ts:165 [checkState] : lottery should close at 06/12/2022 : 22:16:48
+
+app.component.ts:162 [checkState] : The last block was mined at 06/12/2022 : 22:14:12
+
+app.component.ts:165 [checkState] : lottery should close at 06/12/2022 : 22:16:48
+
+app.component.ts:286 [bet] approving 0xD7Da6dFF289814EEB7EC9b5c11844D1E011216e6, amount : 1
+app.component.ts:295 [bet] approved
+app.component.ts:301 [bet] betting
+app.component.ts:254 [displayTokenBalance] : Retreiving token balance for 0xD7Da6dFF289814EEB7EC9b5c11844D1E011216e6
+app.component.ts:257 [displayTokenBalance] : tokenContrat [object Object]
+app.component.ts:258 [displayTokenBalance] : this.accounts[2].address 0xD7Da6dFF289814EEB7EC9b5c11844D1E011216e6
+app.component.ts:306 Bets placed Tx hash (0xe5aaccdc2f658d729360734f8e513ebd55fd8d7e95fee755f2aa671a4b9bde86)
+
+app.component.ts:262 [displayTokenBalance] : balance =  2.49
+app.component.ts:267 [displayTokenBalance] : The account of address 0xD7Da6dFF289814EEB7EC9b5c11844D1E011216e6 has 2.49 LT0
+
+app.component.ts:274 [displayTokenBalance] : Token balance of wallet 0xD7Da6dFF289814EEB7EC9b5c11844D1E011216e6 = 2.49
+app.component.ts:140 [checkState]
+app.component.ts:145 [checkState] : The lottery is open
+app.component.ts:151 [checkState] : get last block
+app.component.ts:162 [checkState] : The last block was mined at 06/12/2022 : 22:15:00
+
+app.component.ts:165 [checkState] : lottery should close at 06/12/2022 : 22:16:48
+
+app.component.ts:319 [closeLottery] Closing lottery
+app.component.ts:324 [closeLottery] Lottery closed Tx hash (0xaf5323b94f079e8471a8f7c6b9f672b38617dca8f8f168def50555e6b021cfcf)
+
+app.component.ts:334 [displayPrize] displaying prize
+app.component.ts:345 [displayPrize] The account of address 0xD7Da6dFF289814EEB7EC9b5c11844D1E011216e6 has earned a prize of 0.5 Tokens
+
+app.component.ts:356 [claimPrize] claiming prize
+app.component.ts:363 Prize claimed Tx hash (0x509219b8a8b427d408128d8c064007fbd2ce5f723628ef72baefb5b619664332)
