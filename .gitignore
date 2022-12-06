@@ -12,6 +12,7 @@
 
 node_modules
 .env*
+frontend/lottery/src/environments
 coverage
 coverage.json
 typechain

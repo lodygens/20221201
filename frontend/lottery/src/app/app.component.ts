@@ -97,7 +97,7 @@ export class AppComponent implements OnInit {
         const lotteryFactory = new ethers.ContractFactory(
           this.tokenInterface,
           tokenJson.bytecode);
-        this.tokenContract = lotteryFactory.attach(this.tokenAddr);
+        this.tokenContract = lotteryFactory.attach(this.tokenAddr).connect(this.provider);
 
         this.openBets("50");
       })
@@ -251,7 +251,7 @@ export class AppComponent implements OnInit {
     this.mainMessage = `Retreiving token balance for ${this.accounts[Number(index)].address}`;
 
     console.log(`[displayTokenBalance] : tokenContrat ${this.tokenContract}`);
-    console.log(`[displayTokenBalance] : this.accounts[Number(index)].address ${this.accounts[Number(index)].address}`);
+    console.log(`[displayTokenBalance] : this.accounts[${Number(index)}].address ${this.accounts[Number(index)].address}`);
     this.tokenContract["balanceOf"](this.accounts[Number(index)].address).then((balanceBN: BigNumber) => {
 
       console.log(`[displayTokenBalance] : balanceBN =  ${balanceBN}`);
