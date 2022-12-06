@@ -9,11 +9,12 @@ import tokenJson from '../assets/LotteryToken.json'
 import { environment } from "../environments/environment";
 import { NgxSpinnerService } from "ngx-spinner";
 import { Block } from '@ethersproject/providers';
+import { setDefaultResultOrder } from 'dns';
 
 
 
-const BET_PRICE = 1;
-const BET_FEE = 0.2;
+const BET_PRICE = .5;
+const BET_FEE = 0.01;
 const TOKEN_RATIO = 10;
 
 @Component({
@@ -23,7 +24,7 @@ const TOKEN_RATIO = 10;
 })
 export class AppComponent implements OnInit {
   mainMessage: string | undefined;
-  wallet: ethers.Wallet | undefined;
+  ownerWallet: ethers.Wallet | undefined;
   provider: ethers.providers.Provider;
   etherBalance: number | undefined;
   tokenBalance: number | undefined;
@@ -35,6 +36,9 @@ export class AppComponent implements OnInit {
   lotteryAddr: string | undefined;
   lotteryInterface: ethers.utils.Interface | undefined;
   accounts: Wallet[] | undefined;
+  walletAddr0: string | undefined;
+  walletAddr1: string | undefined;
+  walletAddr2: string | undefined;
   etherBalance0: Number | undefined;
   etherBalance1: Number | undefined;
   etherBalance2: Number | undefined;
@@ -64,13 +68,13 @@ export class AppComponent implements OnInit {
 
     this.mainMessage = "Please Wait : deploying";
     this.spinner.show();
-    this.wallet = _wallet;
+    this.ownerWallet = _wallet;
     this.lotteryInterface = new ethers.utils.Interface(lotteryJson.abi);
 
     const lotteryFactory = new ethers.ContractFactory(
       this.lotteryInterface,
       lotteryJson.bytecode,
-      this.wallet);
+      this.ownerWallet);
 
     lotteryFactory.deploy(
       "Lottery",
@@ -121,6 +125,9 @@ export class AppComponent implements OnInit {
     this.accounts[0] = new Wallet(environment.PRIVATE_KEY1).connect(this.provider);
     this.accounts[1] = new Wallet(environment.PRIVATE_KEY2).connect(this.provider);
     this.accounts[2] = new Wallet(environment.PRIVATE_KEY3).connect(this.provider);
+    this.walletAddr0 = this.accounts[0].address;
+    this.walletAddr1 = this.accounts[1].address;
+    this.walletAddr2 = this.accounts[2].address;
     this.init(new Wallet(environment.PRIVATE_KEY).connect(this.provider));
   }
 
@@ -251,8 +258,6 @@ export class AppComponent implements OnInit {
     console.log(`[displayTokenBalance] : this.accounts[${Number(index)}].address ${this.accounts[Number(index)].address}`);
     this.tokenContract["balanceOf"](this.accounts[Number(index)].address).then((balanceBN: BigNumber) => {
 
-      console.log(`[displayTokenBalance] : balanceBN =  ${balanceBN}`);
-
       const balance = ethers.utils.formatEther(balanceBN);
       console.log(`[displayTokenBalance] : balance =  ${balance}`);
 
@@ -293,12 +298,12 @@ export class AppComponent implements OnInit {
           if (!this.tokenContract || !this.lotteryContract || !this.accounts)
             return;
 
-            console.log(`[bet] betting`);
+          console.log(`[bet] betting`);
 
-            this.lotteryContract.connect(this.accounts[Number(index)])["betMany"](amount).then((betTx: { wait: () => Promise<any>; }) => {
+          this.lotteryContract.connect(this.accounts[Number(index)])["betMany"](amount).then((betTx: { wait: () => Promise<any>; }) => {
             betTx.wait().then((receipt) => {
-
-              console.log(`Bets placed (${receipt.transactionHash})\n`);
+              //              this.displayTokenBalance(index);
+              console.log(`Bets placed Tx hash (${receipt.transactionHash})\n`);
               this.mainMessage = `Bets Tx hash (${receipt.transactionHash})\n`;
             })
           })
@@ -306,4 +311,57 @@ export class AppComponent implements OnInit {
       })
   }
 
+
+  closeLottery() {
+    if (!this.lotteryContract)
+      return;
+
+    console.log(`[closeLottery] Closing lottery`);
+    this.mainMessage = `Closing lottery`;
+
+    this.lotteryContract["closeLottery"]().then((closeTx: { wait: () => Promise<any>; }) => {
+      closeTx.wait().then((receipt) => {
+        console.log(`[closeLottery] Lottery closed Tx hash (${receipt.transactionHash})\n`);
+        this.mainMessage = `Lottery closed Tx hash (${receipt.transactionHash})`;
+      })
+    })
+  }
+
+  displayPrize(index: string) {
+    if (!this.lotteryContract || !this.accounts)
+      return;
+
+    console.log(`[displayPrize] displaying prize`);
+    this.mainMessage = "Displaying prize";
+
+    this.lotteryContract["prize"](this.accounts[Number(index)].address).then((prizeBN: BigNumber) => {
+      const prize = ethers.utils.formatEther(prizeBN);
+
+      if (!this.accounts)
+        return;
+
+      this.mainMessage = `[displayPrize] The account of address ${this.accounts[Number(index)].address} has earned a prize of ${prize} Tokens\n`;
+
+      console.log(
+        `[displayPrize] The account of address ${this.accounts[Number(index)].address
+        } has earned a prize of ${prize} Tokens\n`
+      );
+    })
+  }
+
+  claimPrize(index: string, amount: string) {
+    if (!this.lotteryContract || !this.accounts)
+      return;
+
+    console.log(`[claimPrize] claiming prize`);
+    this.mainMessage = "Claiming prize";
+
+    this.lotteryContract.connect(this.accounts[Number(index)])
+    ["prizeWithdraw"](ethers.utils.parseEther(amount)).then((claimTx: { wait: () => Promise<any>; }) => {
+      claimTx.wait().then((receipt) => {
+        this.mainMessage = `Prize claimed Tx hash (${receipt.transactionHash})`;
+        console.log(`Prize claimed Tx hash (${receipt.transactionHash})`);
+      })
+  })
+}
 }
