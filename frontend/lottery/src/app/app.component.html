@@ -29,11 +29,25 @@
       </div>
     </div>
     <div>
-      <input #walletNumber class="form-control mb-4" type="text" placeholder="Paste here the index of the wallet" />
-      <input #betAmount class="form-control mb-4" type="text" placeholder="Paste here the amount to bet" />
-      <button type="button" class="btn btn-info btn-lg px-4 gap-3" (click)="bet(walletNumber.value,betAmount.value);">
-        Bet
-      </button>
+      <div>
+        <button type="button" class="btn btn-info btn-lg px-4 gap-3" (click)="closeLottery();">
+          [2] Close lottery
+        </button>
+      </div>
+
+      <div>
+        <input #walletIndex class="form-control mb-4" type="text" placeholder="Paste here the index of the wallet" />
+        <input #betAmount class="form-control mb-4" type="text" placeholder="Paste here the amount to bet" />
+        <button type="button" class="btn btn-info btn-lg px-4 gap-3" (click)="bet(walletIndex.value,betAmount.value);">
+         [1] Bet
+        </button>
+        <button type="button" class="btn btn-info btn-lg px-4 gap-3" (click)="displayPrize(walletIndex.value);">
+          [3] Display prize
+        </button>
+        <button type="button" class="btn btn-info btn-lg px-4 gap-3" (click)="claimPrize(walletIndex.value,betAmount.value);">
+          [4] Claim prize
+        </button>
+      </div>
     </div>
   </div>
 </div>

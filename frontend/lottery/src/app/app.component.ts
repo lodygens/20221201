@@ -302,7 +302,7 @@ export class AppComponent implements OnInit {
 
           this.lotteryContract.connect(this.accounts[Number(index)])["betMany"](amount).then((betTx: { wait: () => Promise<any>; }) => {
             betTx.wait().then((receipt) => {
-              //              this.displayTokenBalance(index);
+              this.displayTokenBalance(index);
               console.log(`Bets placed Tx hash (${receipt.transactionHash})\n`);
               this.mainMessage = `Bets Tx hash (${receipt.transactionHash})\n`;
             })
