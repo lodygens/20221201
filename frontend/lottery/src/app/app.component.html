@@ -1,50 +1,39 @@
 <div class="px-4 py-5 my-5 text-center">
   <h1 class="display-5 fw-bold">Tokenized Ballot</h1>
   <div *ngIf="!wallet" class="col-lg-6 mx-auto">
-    <div style="background-color: black; color:white"> &nbsp;{{mainMessage}}</div>
-    <p>
-      <input #tokenAddress class="form-control mb-4" type="text" placeholder="Paste here, the Token Contract address" />
-    </p>
-    <p>
-      <input #lotteryAddress class="form-control mb-4" type="text"
-        placeholder="Paste here, the Lottery Contract address" />
-    </p>
-    <p>To use this ballot you need a wallet</p>
-    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-      <button disabled type="button" class="btn btn-success btn-lg px-4 gap-3" (click)="createWallet();">
-        Create Wallet
-      </button>
-
-      <button type="button" class="btn btn-info btn-lg px-4 gap-3" (click)="importWallet();">
-        Import Wallet
-      </button>
-      <button type="button" disabled class="btn btn-danger btn-lg px-4 gap-3">
-        Connect Wallet
-      </button>
-    </div>
+    <button type="button" class="btn btn-info btn-lg px-4 gap-3" (click)="importWallet();">
+      Start
+    </button>
   </div>
-  <div *ngIf="wallet" class="col-lg-6 mx-auto">
-    <div style="background-color: black; color:white"> &nbsp;{{mainMessage}}</div>
-    <p>Your wallet address : {{wallet.address}}</p>
+</div>
+<div *ngIf="wallet" class="col-lg-6 mx-auto">
+  <div style="background-color: black; color:white"> &nbsp;{{mainMessage}}</div>
+  <p>Your wallet address : {{wallet.address}}</p>
 
-    <p>Lottery address : {{lotteryAddr}}</p>
-    <p>Lottery Token address : {{tokenAddr}}</p>
+  <p>Lottery address : {{lotteryAddr}}</p>
+  <p>Lottery Token address : {{tokenAddr}}</p>
 
-    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-      <div class="card">
-        <div class="card-body">
-          <p>Accounts 0 balance = {{etherBalance0}}</p>
-          <p>Accounts 0 token balance = {{tokenBalance0}}</p>
-        </div>
-        <div class="card-body">
-          <p>Accounts 1 balance = {{etherBalance1}}</p>
-          <p>Accounts 0 token balance = {{tokenBalance1}}</p>
-        </div>
-        <div class="card-body">
-          <p>Accounts 2 balance = {{etherBalance2}}</p>
-          <p>Accounts 0 token balance = {{tokenBalance2}}</p>
-        </div>
+  <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+    <div class="card">
+      <div class="card-body">
+        <p>Accounts 0 balance = {{etherBalance0}}</p>
+        <p>Accounts 0 token balance = {{tokenBalance0}}</p>
       </div>
+      <div class="card-body">
+        <p>Accounts 1 balance = {{etherBalance1}}</p>
+        <p>Accounts 1 token balance = {{tokenBalance1}}</p>
+      </div>
+      <div class="card-body">
+        <p>Accounts 2 balance = {{etherBalance2}}</p>
+        <p>Accounts 2 token balance = {{tokenBalance2}}</p>
+      </div>
+    </div>
+    <div>
+      <input #walletNumber class="form-control mb-4" type="text" placeholder="Paste here the index of the wallet" />
+      <input #betAmount class="form-control mb-4" type="text" placeholder="Paste here the amount to bet" />
+      <button type="button" class="btn btn-info btn-lg px-4 gap-3" (click)="bet(walletNumber.value,betAmount.value);">
+        Bet
+      </button>
     </div>
   </div>
 </div>

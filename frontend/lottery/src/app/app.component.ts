@@ -14,7 +14,7 @@ import { Block } from '@ethersproject/providers';
 
 const BET_PRICE = 1;
 const BET_FEE = 0.2;
-const TOKEN_RATIO = 1;
+const TOKEN_RATIO = 10;
 
 @Component({
   selector: 'app-root',
@@ -99,7 +99,7 @@ export class AppComponent implements OnInit {
           tokenJson.bytecode);
         this.tokenContract = lotteryFactory.attach(this.tokenAddr).connect(this.provider);
 
-        this.openBets("50");
+        this.openBets("180"); // 3mn
       })
     });
   }
@@ -197,8 +197,7 @@ export class AppComponent implements OnInit {
 
     this.mainMessage = "Retreiving balance";
 
-    //    for (let i = 0; i < this.accounts.length; i++) {
-    for (let i = 1; i < 2; i++) {
+    for (let i = 0; i < this.accounts.length; i++) {
       this.provider.getBalance(
         this.accounts[i].address
       ).then((balance: BigNumber) => {
@@ -211,7 +210,7 @@ export class AppComponent implements OnInit {
           case 2: this.etherBalance2 = new Number(balanceEthers); break;
         }
         console.log(`[displayBalancesAndBuyTokens] : Balance of wallet ${this.accounts[Number(i)].address} = ${balanceEthers}`);
-        let amount = (i + 1) / 1000;
+        let amount = i + 1;
         this.buyAndDisplayTokens(i.toString(), amount.toString());
       })
     }
@@ -242,10 +241,8 @@ export class AppComponent implements OnInit {
   }
 
   displayTokenBalance(index: string) {
-    if (!this.tokenContract || !this.accounts) {
-      this.mainMessage = "/!\\ tokenContract is null /!\\";
+    if (!this.tokenContract || !this.accounts)
       return;
-    }
 
     console.log(`[displayTokenBalance] : Retreiving token balance for ${this.accounts[Number(index)].address}`);
     this.mainMessage = `Retreiving token balance for ${this.accounts[Number(index)].address}`;
@@ -271,8 +268,42 @@ export class AppComponent implements OnInit {
 
       console.log(`[displayTokenBalance] : Token balance of wallet ${this.accounts[Number(index)].address} = ${balance}`);
 
+      this.checkState();
     })
 
+  }
+
+  bet(index: string, amount: string) {
+    if (!this.tokenContract || !this.lotteryContract || !this.accounts)
+      return;
+
+    this.mainMessage = `Bet approving ${this.accounts[Number(index)].address}, amount : ${amount}`;
+    console.log(`[bet] approving ${this.accounts[Number(index)].address}, amount : ${amount}`);
+
+    this.tokenContract
+      .connect(this.accounts[Number(index)])
+    ["approve"](this.lotteryContract.address, ethers.constants.MaxUint256)
+      .then((approveTx: { wait: () => Promise<any>; }) => {
+        if (!this.tokenContract || !this.lotteryContract || !this.accounts)
+          return;
+
+        console.log(`[bet] approved`);
+
+        approveTx.wait().then(() => {
+          if (!this.tokenContract || !this.lotteryContract || !this.accounts)
+            return;
+
+            console.log(`[bet] betting`);
+
+            this.lotteryContract.connect(this.accounts[Number(index)])["betMany"](amount).then((betTx: { wait: () => Promise<any>; }) => {
+            betTx.wait().then((receipt) => {
+
+              console.log(`Bets placed (${receipt.transactionHash})\n`);
+              this.mainMessage = `Bets Tx hash (${receipt.transactionHash})\n`;
+            })
+          })
+        })
+      })
   }
 
 }
